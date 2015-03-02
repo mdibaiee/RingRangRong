@@ -1,0 +1,52 @@
+#controls {
+  display: inline-block;
+  float: left;
+  width: 20%;
+  height: 70%;
+  background: @dark;
+  border-right: 1px solid @dark-red;
+  padding-top: 2rem;
+}
+
+#controls > ul li {
+  display: block;
+  margin: 1rem 0;
+  cursor: pointer;
+}
+
+#controls #properties {
+  p {
+    font-weight: bold;
+  }
+  ul {
+    padding-left: 1rem;
+    margin-left: 3rem;
+    border-left: 1px solid @red;
+    font-size: 1.2rem;
+    width: 60%;
+    height: auto;
+
+    li {
+      display: block;
+      margin: 1.5rem 0;
+      span {
+        display: inline-block;
+      }
+      input, select {
+        margin-top: -0.4rem;
+        font-size: 1.2rem;
+        background: transparent;
+        border: none;
+        text-align: right;
+        color: @text;
+        width: 50%;
+        float: right;
+      }
+      select {
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+    }
+  }
+}
