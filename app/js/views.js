@@ -37,10 +37,7 @@ var PanelView = React.createClass({ displayName: "PanelView",
     var els = this.props.items.map(function (item, index) {
       return React.createElement("canvas", { id: "i-" + index });
     });
-
-    els.forEach(function (el) {
-      var c = el.getContext("2d");
-    });
+    return els;
   },
   render: function render() {
     return React.createElement("div", null, React.createElement("ul", { className: "names" }, this.names()), React.createElement("ul", { className: "timelapse" }, this.timelapses()));

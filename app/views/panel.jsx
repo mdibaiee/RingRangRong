@@ -36,12 +36,7 @@ var PanelView = React.createClass({
     let els = this.props.items.map((item, index) => {
       return <canvas id={'i-'+index}></canvas>;
     });
-
-    els.forEach(el => {
-      let c = el.getContext('2d');
-
-      
-    });
+    return els;
   },
   render() {
     return <div>
