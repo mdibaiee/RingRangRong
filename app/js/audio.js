@@ -33,7 +33,7 @@
           return oscillator.detune.value;
         },
         set type(value) {
-          if(!types.includes(value)) return;
+          if(types.indexOf(value) === -1) return;
 
           oscillator.type = value;
         },

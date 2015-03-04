@@ -151,7 +151,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
         },
         type: {
           set: function (value) {
-            if (!types.includes(value)) return;
+            if (types.indexOf(value) === -1) return;
 
             oscillator.type = value;
           },
