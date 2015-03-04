@@ -1797,15 +1797,44 @@
 #panel {
   display: block;
   width: 100%;
-  height: 30%;
+  min-height: 30%;
+  height: auto;
   background: #141414;
   clear: both;
   border-top: 1px solid #6e0201;
   padding-top: 2rem;
 }
-#panel li {
-  margin: 1.5rem 0;
+#panel ul {
+  display: inline-block;
+}
+#panel ul:first-of-type {
+  margin: 0 0;
+  position: relative;
+  top: -1.2rem;
+  width: 10%;
+  cursor: pointer;
+}
+#panel ul:first-of-type li {
   display: block;
+  margin: 2.5rem 0;
+}
+#panel ul:first-of-type li:first-of-type {
+  margin-top: 0;
+}
+#panel ul:last-of-type {
+  margin-top: 0.2rem;
+  margin-left: 5rem;
+  padding: 0;
+  width: 60%;
+}
+#panel ul:last-of-type canvas {
+  margin: 0.5rem 0;
+}
+#panel ul:last-of-type canvas.cut {
+  cursor: ew-resize;
+}
+#panel ul:last-of-type canvas.add,
+#panel ul:last-of-type canvas.merge {
   cursor: pointer;
 }
 #wave {
@@ -1814,6 +1843,33 @@
   width: 80%;
   height: 70%;
   background: #232323;
+  position: relative;
+}
+#wave .playback-controls {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+}
+#wave .playback-controls .fa {
+  cursor: pointer;
+}
+#wave .playback-controls .fa::before {
+  font-size: 2.3rem;
+  margin: 0 1rem;
+}
+.tools {
+  position: absolute;
+  display: inline-block;
+  width: 100%;
+  height: 5rem;
+  bottom: 0;
+  left: 0;
+  background: #141414;
+  border-top: 1px solid #6e0201;
+}
+.tools li {
+  margin: 0 5%;
+  cursor: pointer;
 }
 #controls {
   display: inline-block;
@@ -1886,4 +1942,7 @@ ul {
 }
 * {
   box-sizing: border-box;
+}
+.hidden {
+  display: none;
 }

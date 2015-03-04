@@ -1,15 +1,49 @@
 #panel {
   display: block;
   width: 100%;
-  height: 30%;
+  min-height: 30%;
+  height: auto;
   background: @dark;
   clear: both;
   border-top: 1px solid @dark-red;
   padding-top: 2rem;
+
+  ul {
+    display: inline-block;
+  }
 }
 
-#panel li {
-  margin: 1.5rem 0;
-  display: block;
+#panel ul:first-of-type {
+  margin: 0 0;
+  position: relative;
+  top: -1.2rem;
+  width: 10%;
   cursor: pointer;
+
+  li {
+    display: block;
+    margin: 2.5rem 0;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+}
+
+#panel ul:last-of-type {
+  margin-top: 0.2rem;
+  margin-left: 5rem;
+  padding: 0;
+  width: 60%;
+
+  canvas {
+    margin: 0.5rem 0;
+
+    &.cut {
+      cursor: ew-resize;
+    }
+    &.add, &.merge {
+      cursor: pointer;
+    }
+  }
 }

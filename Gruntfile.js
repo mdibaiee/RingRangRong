@@ -14,10 +14,11 @@ module.exports = function(grunt) {
         files: {
           '.tmp/main.js': [
             'app/js/media.js',
+            'app/js/timelapse.js',
             'app/js/main.js',
             'app/js/audio.js',
-            'app/js/timelapse.js',
-            'app/js/wave.js'
+            'app/js/wave.js',
+            'app/js/play.js'
           ]
         }
       }
@@ -54,7 +55,7 @@ module.exports = function(grunt) {
       js: {
         files: ['app/js/audio.js', 'app/js/main.js', 
                 'app/js/wave.js', 'app/js/media.js',
-                'app/js/timelapse.js'],
+                'app/js/timelapse.js', 'app/js/play.js'],
         tasks: ['concat', 'babel:js', 'clean']
       },
       react: {

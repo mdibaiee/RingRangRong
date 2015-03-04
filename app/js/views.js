@@ -8,14 +8,6 @@ var PanelView = React.createClass({ displayName: "PanelView",
 
     this.state.itemsStatus[index] = item.connected;
 
-    if (item.connected) {
-      item.gain.connect(audioContext.destination);
-      item.gain.connect(analyser);
-    } else {
-      item.gain.disconnect(audioContext.destination);
-      item.gain.disconnect(analyser);
-    }
-
     this.setState({
       itemsStatus: this.state.itemsStatus
     });
@@ -34,10 +26,69 @@ var PanelView = React.createClass({ displayName: "PanelView",
     });
   },
   timelapses: function timelapses() {
-    var els = this.props.items.map(function (item, index) {
-      return React.createElement("canvas", { id: "i-" + index });
+    var _this = this;
+
+    return this.props.items.map(function (item, index) {
+      return React.createElement("canvas", { id: "i-" + index, key: index,
+        onClick: _this.timelapseAction.bind(_this, index),
+        onMouseMove: _this.showRange.bind(_this, index) });
     });
-    return els;
+  },
+  timelapseAction: function timelapseAction(index, e) {
+    var item = this.props.items[index];
+
+    var $el = $("#i-" + index),
+        cls = $el.attr("class");
+
+    var width = $el.width();
+    var n = map(e.pageX - $el.offset().left, 0, width, 0, 1);
+
+    var ind = 0;
+
+    var before = item.range.reduce(function (a, b, i) {
+      return b >= a && b < n ? (ind = i, b) : a;
+    }, -Infinity);
+
+    if (cls === "cut") {
+      item.range.splice(ind, 1, before, n);
+    }
+    if (cls === "delete") {
+      item.range.splice(ind, 1, before, undefined);
+    }
+    if (cls === "merge") {
+      console.log(item.range, ind);
+      if (item.range[ind + 1] !== undefined) {
+        return;
+      }item.range.splice(ind, 3);
+    }
+    if (cls === "add") {
+      if (item.range[ind + 1] !== undefined) {
+        return;
+      }if (!this.state.firstAdd) {
+        this.state.firstAdd = n;
+        return;
+      }
+      item.range.splice(ind + 1, 1, undefined, this.state.firstAdd, n, undefined);
+      this.state.firstAdd = false;
+    }
+
+    initTimelapses();
+  },
+  showRange: function showRange(index, e) {
+    if (!this.state.firstAdd) {
+      return;
+    }var $canvas = document.getElementById("i-" + index);
+    var c = $canvas.getContext("2d");
+
+    initTimelapses();
+    c.fillStyle = "#6E0201";
+    var start = this.state.firstAdd * $canvas.width,
+        end = e.pageX - $canvas.offsetLeft - start;
+
+    c.fillRect(start, 0, end, 30);
+  },
+  componentDidUpdate: function componentDidUpdate() {
+    initTimelapses();
   },
   render: function render() {
     return React.createElement("div", null, React.createElement("ul", { className: "names" }, this.names()), React.createElement("ul", { className: "timelapse" }, this.timelapses()));
