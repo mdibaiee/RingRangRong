@@ -2,9 +2,30 @@
 
 var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } };
 
-var map = function (a, oldMin, oldMax, min, max) {
-  return (a - oldMin) / (oldMax - oldMin) * (max - min) + min;
-};
+(function (global) {
+  var map = function (a, oldMin, oldMax, min, max) {
+    return (a - oldMin) / (oldMax - oldMin) * (max - min) + min;
+  };
+
+  var $tooltip = $("#tooltip");
+
+  $.fn.tooltip = function (text, coords) {
+    if (text === false) {
+      $tooltip.addClass("hide");
+      return;
+    }
+    $tooltip.removeClass("hide");
+    $tooltip.text(text);
+
+    $tooltip.css({
+      left: coords.x,
+      top: coords.y
+    });
+  };
+
+  global.map = map;
+  global.tooltip = tooltip;
+})(window);
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 (function (global) {
@@ -14,7 +35,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
 
     var width = $panel.width() * 0.8;
     var height = 30;
-    var distance = width / 101;
+    var distance = width / 100;
 
     $timelapses.each(function (e) {
       this.width = width;
@@ -28,7 +49,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
       c.fillStyle = "white";
 
       c.beginPath();
-      for (var i = 0; i <= 100; i++) {
+      for (var i = 0; i < 100; i++) {
         var h = i % 10 === 0 ? 20 : 10;
         c.rect(i * distance, height - h, 2, h);
       }
@@ -98,9 +119,86 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
   var properties = React.render(factory, document.getElementById("properties"));
 }
 
+(function (e, t) {
+  $(document).ready(function () {
+    $(document.body).click(function (e) {
+      var $target = $(e.target);
+      if ($target.is("[data-modal]") || $target.parents("[data-modal]").length || $target.is(".modal") || $target.parents(".modal").length) return;
+      $(".modal").addClass("hide");
+    });
+  });
+})(undefined);
 (function (global) {
   var audioContext = new (window.AudioContext || window.webkitAudioContext)();
   var analyser = audioContext.createAnalyser();
+
+  var $selectBeep = $("#select-beep"),
+      $addBeep = $("#add-beep");
+
+  $addBeep.click(function (e) {
+    $selectBeep.removeClass("hide");
+  });
+
+  $selectBeep.on("click", "span", function (e) {
+    var id = parseInt(e.target.textContent.trim(), 10) - 1;
+
+    var $audio = $("#audio-" + id);
+    if (!$audio.length) {
+      (function () {
+        $audio = $("<audio id=\"audio" + id + "\" src=\"/app/beeps/" + id + ".mp3\"></audio>");
+        var audio = $audio.get(0);
+        audio.src = "/app/beeps/" + id + ".mp3";
+        audio.loop = true;
+        $audio.on("canplay", function (e) {
+          audio.play();
+        });
+
+        $(document.body).append($audio);
+      })();
+    }
+
+    var beep = audioContext.createMediaElementSource($audio.get(0)),
+        gain = audioContext.createGain();
+
+    var newLine = {
+      name: "[" + (id + 1) + "] Beep " + (panel.props.items.length + 1),
+      oscillator: beep,
+      gain: gain,
+      connected: true,
+      range: [0, 1],
+      properties: Object.defineProperties({
+        types: {
+          volume: {
+            type: "number"
+          }
+        }
+      }, {
+        volume: {
+          set: function (value) {
+            if (typeof value !== "number") return;
+
+            gain.gain.value = value / 100;
+          },
+          get: function () {
+            return parseInt(Math.round(gain.gain.value * 100));
+          },
+          enumerable: true,
+          configurable: true
+        }
+      })
+    };
+
+    beep.connect(gain);
+
+    panel.setState({
+      itemsStatus: panel.state.itemsStatus.concat(true)
+    });
+    panel.setProps({
+      items: panel.props.items.concat(newLine)
+    });
+
+    $selectBeep.addClass("hide");
+  });
 
   $("#add-oscillator").click(function (e) {
     var oscillator = audioContext.createOscillator(),
@@ -112,7 +210,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
       name: "Oscillator " + (panel.props.items.length + 1),
       oscillator: oscillator,
       gain: gain,
-      connected: false,
+      connected: true,
       range: [0, 1],
       properties: Object.defineProperties({
         types: {
@@ -183,7 +281,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
     oscillator.connect(gain);
 
     panel.setState({
-      itemsStatus: panel.state.itemsStatus.concat(false)
+      itemsStatus: panel.state.itemsStatus.concat(true)
     });
     panel.setProps({
       items: panel.props.items.concat(newLine)
@@ -199,7 +297,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
         name: "Line In " + (panel.props.items.length + 1),
         oscillator: stream,
         gain: gain,
-        connected: false,
+        connected: true,
         range: [0, 1],
         properties: Object.defineProperties({
           types: {
@@ -226,7 +324,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
       stream.connect(gain);
 
       panel.setState({
-        itemsStatus: panel.state.itemsStatus.concat(false)
+        itemsStatus: panel.state.itemsStatus.concat(true)
       });
       panel.setProps({
         items: panel.props.items.concat(newLine)
@@ -392,16 +490,16 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
     if (status === 0) {
       return;
     }analyser.disconnect(audioContext.destination);
-    stopWave();
+    var items = panel.props.items;
     var _iteratorNormalCompletion = true;
     var _didIteratorError = false;
     var _iteratorError = undefined;
 
     try {
-      for (var _iterator = timeouts[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var t = _step.value;
+      for (var _iterator = items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var item = _step.value;
 
-        clearTimeout(t);
+        item.gain.disconnect(analyser);
       }
     } catch (err) {
       _didIteratorError = true;
@@ -414,6 +512,32 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
       } finally {
         if (_didIteratorError) {
           throw _iteratorError;
+        }
+      }
+    }
+
+    stopWave();
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
+
+    try {
+      for (var _iterator2 = timeouts[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+        var t = _step2.value;
+
+        clearTimeout(t);
+      }
+    } catch (err) {
+      _didIteratorError2 = true;
+      _iteratorError2 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion2 && _iterator2["return"]) {
+          _iterator2["return"]();
+        }
+      } finally {
+        if (_didIteratorError2) {
+          throw _iteratorError2;
         }
       }
     }

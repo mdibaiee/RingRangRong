@@ -26,7 +26,7 @@ var PanelView = React.createClass({
   },
   timelapses() {
     return this.props.items.map((item, index) => {
-      return <canvas id={'i-'+index} key={index} 
+      return <canvas id={'i-'+index} key={index}
               onClick={this.timelapseAction.bind(this, index)}
               onMouseMove={this.showRange.bind(this, index)}></canvas>;
     });
@@ -85,6 +85,24 @@ var PanelView = React.createClass({
   },
   componentDidUpdate() {
     initTimelapses();
+  },
+  componentDidMount() {
+    let $panel = $('#panel');
+
+    $panel.on('mousemove', 'canvas', (e) => {
+      let $canvas = $(e.target);
+      let width = $canvas.width();
+      let offset = $canvas.offset();
+      let toten = map(e.pageX, offset.left, offset.left+width, 0, 10).toFixed(1);
+
+      $canvas.tooltip(toten, {
+        x: e.pageX,
+        y: offset.top + $canvas.height()
+      });
+    });
+    $panel.on('mouseout', 'canvas', e => {
+      jQuery.fn.tooltip(false);
+    })
   },
   render() {
     return <div>

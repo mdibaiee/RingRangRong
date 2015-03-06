@@ -90,6 +90,24 @@ var PanelView = React.createClass({ displayName: "PanelView",
   componentDidUpdate: function componentDidUpdate() {
     initTimelapses();
   },
+  componentDidMount: function componentDidMount() {
+    var $panel = $("#panel");
+
+    $panel.on("mousemove", "canvas", function (e) {
+      var $canvas = $(e.target);
+      var width = $canvas.width();
+      var offset = $canvas.offset();
+      var toten = map(e.pageX, offset.left, offset.left + width, 0, 10).toFixed(1);
+
+      $canvas.tooltip(toten, {
+        x: e.pageX,
+        y: offset.top + $canvas.height()
+      });
+    });
+    $panel.on("mouseout", "canvas", function (e) {
+      jQuery.fn.tooltip(false);
+    });
+  },
   render: function render() {
     return React.createElement("div", null, React.createElement("ul", { className: "names" }, this.names()), React.createElement("ul", { className: "timelapse" }, this.timelapses()));
   }

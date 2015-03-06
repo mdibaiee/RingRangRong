@@ -1919,6 +1919,66 @@
   -webkit-appearance: none;
   appearance: none;
 }
+.modal {
+  width: 50rem;
+  height: 33rem;
+  background: #232323;
+  border: 1px solid #141414;
+  padding: 2rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 5px #6e0201, 0 0 2px #d51a00, 0 0 2rem rgba(210, 99, 98, 0.4);
+  transition: opacity 0.2s ease-in-out;
+  z-index: 100;
+}
+.modal p {
+  text-align: center;
+  text-shadow: 0 0 1rem #020202;
+  font-size: 1.8rem;
+  margin-top: 0.5rem;
+}
+.modal.hide {
+  opacity: 0;
+  z-index: -100;
+  transition: opacity 0.2s ease-in-out, z-index 0.2s 0.2s;
+}
+#tooltip {
+  position: absolute;
+  padding: 0.5rem 0.7rem;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border-radius: 0.5rem;
+  transform: translateX(-50%);
+  transition: opacity 0.2s ease-in-out;
+  z-index: 100;
+}
+#tooltip.hide {
+  opacity: 0;
+  z-index: -100;
+  transition: opacity 0.2s ease-in-out, z-index 0.2s 0.2s;
+}
+#select-beep {
+  text-align: center;
+}
+#select-beep span {
+  display: inline-block;
+  width: 3rem;
+  height: 3rem;
+  padding-top: 0.5rem;
+  background: #1b1b1b;
+  border: 2px solid #141414;
+  border-radius: 5px;
+  margin: 1rem 0.6rem;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+#select-beep span:hover {
+  background: #0f0f0f;
+}
 html {
   font-size: 10px;
 }

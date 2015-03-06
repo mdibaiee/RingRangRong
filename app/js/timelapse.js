@@ -5,7 +5,7 @@
 
     const width = $panel.width() * 0.8;
     const height = 30;
-    const distance = width / 101;
+    const distance = width / 100;
 
     $timelapses.each(function(e) {
       this.width = width;
@@ -19,7 +19,7 @@
       c.fillStyle = 'white';
 
       c.beginPath();
-      for(let i = 0; i <= 100; i++) {
+      for(let i = 0; i < 100; i++) {
         let h = i % 10 === 0 ? 20 : 10;
         c.rect(i*distance, height-h, 2, h);
       }

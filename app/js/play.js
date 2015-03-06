@@ -50,6 +50,11 @@
   function stop() {
     if(status === 0) return;
     analyser.disconnect(audioContext.destination);
+    let items = panel.props.items;
+    for(let item of items) {
+      item.gain.disconnect(analyser);
+    }
+
     stopWave();
     for(let t of timeouts) {
       clearTimeout(t);
