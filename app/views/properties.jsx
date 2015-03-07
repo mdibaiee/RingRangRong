@@ -37,7 +37,7 @@ var PropertiesView = React.createClass({
   render() {
     if(!this.props.item) return <span></span>;
     return <ul className='properties'>
-      <p>Properties</p>
+      <p>{this.props.name} Properties</p>
       {this.propertyList()}
     </ul>
   }

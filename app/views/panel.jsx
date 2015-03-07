@@ -12,7 +12,7 @@ var PanelView = React.createClass({
   },
   showProps(index) {
     let item = this.props.items[index];
-    properties.setProps({item: item.properties});
+    properties.setProps({item: item.properties, name: item.name});
   },
   names() {
     return this.props.items.map((item, index) => {

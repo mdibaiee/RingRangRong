@@ -14,7 +14,7 @@ var PanelView = React.createClass({ displayName: "PanelView",
   },
   showProps: function showProps(index) {
     var item = this.props.items[index];
-    properties.setProps({ item: item.properties });
+    properties.setProps({ item: item.properties, name: item.name });
   },
   names: function names() {
     var _this = this;
@@ -146,7 +146,7 @@ var PropertiesView = React.createClass({ displayName: "PropertiesView",
   render: function render() {
     if (!this.props.item) {
       return React.createElement("span", null);
-    }return React.createElement("ul", { className: "properties" }, React.createElement("p", null, "Properties"), this.propertyList());
+    }return React.createElement("ul", { className: "properties" }, React.createElement("p", null, this.props.name, " Properties"), this.propertyList());
   }
 });
 
