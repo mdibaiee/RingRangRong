@@ -140,41 +140,66 @@
   });
 
   $('#add-stream').click(e => {
-    navigator.getUserMedia({audio: true}, stream => {
-      let stream = audioContext.createMediaStreamSource(stream),
+    navigator.getUserMedia({audio: true}, media => {
+      let stream = audioContext.createMediaStreamSource(media),
           gain = audioContext.createGain();
 
-      let newLine = {
-        name: 'Line In ' + (panel.props.items.length + 1),
-        oscillator: stream,
-        gain: gain,
-        connected: true,
-        range: [0, 1],
-        properties: {
-          set volume(value) {
-            if(typeof value !== 'number') return;
+      stream.connect(audioContext.destination);
 
-            gain.gain.value = value / 100;
-          },
-          get volume() {
-            return parseInt(Math.round(gain.gain.value * 100));
-          },
-          types: {
-            volume: {
-              type: 'number'
+      let record = new Recorder(stream, {
+        workerPath: '/app/js/libs/recorderWorker.js'
+      });
+
+      record.record();
+
+      setTimeout(() => {
+        record.stop();
+
+        record.getBuffer(buffers => {
+          let buff = audioContext.createBuffer(2, buffers[0].length, audioContext.sampleRate);
+          let bufferSource = audioContext.createBufferSource();
+
+          buff.getChannelData(0).set(buffers[0]);
+          buff.getChannelData(1).set(buffers[1]);
+
+          bufferSource.buffer = buff;
+          bufferSource.connect(gain);
+
+          bufferSource.loop = true;
+
+          bufferSource.start();
+
+          let newLine = {
+            name: 'Line In ' + (panel.props.items.length + 1),
+            oscillator: bufferSource,
+            gain: gain,
+            connected: true,
+            range: [0, 1],
+            properties: {
+              set volume(value) {
+                if(typeof value !== 'number') return;
+
+                gain.gain.value = value / 100;
+              },
+              get volume() {
+                return parseInt(Math.round(gain.gain.value * 100));
+              },
+              types: {
+                volume: {
+                  type: 'number'
+                }
+              }
             }
-          }
-        }
-      };
+          };
 
-      stream.connect(gain);
-
-      panel.setState({
-        itemsStatus: panel.state.itemsStatus.concat(true)
-      });
-      panel.setProps({
-        items: panel.props.items.concat(newLine)
-      });
+          panel.setState({
+            itemsStatus: panel.state.itemsStatus.concat(true)
+          });
+          panel.setProps({
+            items: panel.props.items.concat(newLine)
+          });         
+        });
+      }, 10000);
     }, e => {});
   });
 

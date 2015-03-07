@@ -289,46 +289,71 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
   });
 
   $("#add-stream").click(function (e) {
-    navigator.getUserMedia({ audio: true }, function (stream) {
-      var stream = audioContext.createMediaStreamSource(stream),
+    navigator.getUserMedia({ audio: true }, function (media) {
+      var stream = audioContext.createMediaStreamSource(media),
           gain = audioContext.createGain();
 
-      var newLine = {
-        name: "Line In " + (panel.props.items.length + 1),
-        oscillator: stream,
-        gain: gain,
-        connected: true,
-        range: [0, 1],
-        properties: Object.defineProperties({
-          types: {
-            volume: {
-              type: "number"
-            }
-          }
-        }, {
-          volume: {
-            set: function (value) {
-              if (typeof value !== "number") return;
+      stream.connect(audioContext.destination);
 
-              gain.gain.value = value / 100;
-            },
-            get: function () {
-              return parseInt(Math.round(gain.gain.value * 100));
-            },
-            enumerable: true,
-            configurable: true
-          }
-        })
-      };
-
-      stream.connect(gain);
-
-      panel.setState({
-        itemsStatus: panel.state.itemsStatus.concat(true)
+      var record = new Recorder(stream, {
+        workerPath: "/app/js/libs/recorderWorker.js"
       });
-      panel.setProps({
-        items: panel.props.items.concat(newLine)
-      });
+
+      record.record();
+
+      setTimeout(function () {
+        record.stop();
+
+        record.getBuffer(function (buffers) {
+          var buff = audioContext.createBuffer(2, buffers[0].length, audioContext.sampleRate);
+          var bufferSource = audioContext.createBufferSource();
+
+          buff.getChannelData(0).set(buffers[0]);
+          buff.getChannelData(1).set(buffers[1]);
+
+          bufferSource.buffer = buff;
+          bufferSource.connect(gain);
+
+          bufferSource.loop = true;
+
+          bufferSource.start();
+
+          var newLine = {
+            name: "Line In " + (panel.props.items.length + 1),
+            oscillator: bufferSource,
+            gain: gain,
+            connected: true,
+            range: [0, 1],
+            properties: Object.defineProperties({
+              types: {
+                volume: {
+                  type: "number"
+                }
+              }
+            }, {
+              volume: {
+                set: function (value) {
+                  if (typeof value !== "number") return;
+
+                  gain.gain.value = value / 100;
+                },
+                get: function () {
+                  return parseInt(Math.round(gain.gain.value * 100));
+                },
+                enumerable: true,
+                configurable: true
+              }
+            })
+          };
+
+          panel.setState({
+            itemsStatus: panel.state.itemsStatus.concat(true)
+          });
+          panel.setProps({
+            items: panel.props.items.concat(newLine)
+          });
+        });
+      }, 10000);
     }, function (e) {});
   });
 
