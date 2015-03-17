@@ -80,25 +80,25 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
     });
   }
 
-  $(".tools .fa-scissors").click(function () {
+  $(".tools #cut").click(function () {
     var $timelapses = $("[id^=\"i-\"]");
 
     $timelapses.removeClass().addClass("cut");
   });
 
-  $(".tools .fa-plus").click(function () {
+  $(".tools #add").click(function () {
     var $timelapses = $("[id^=\"i-\"]");
 
     $timelapses.removeClass().addClass("add");
   });
 
-  $(".tools .fa-compress").click(function () {
+  $(".tools #merge").click(function () {
     var $timelapses = $("[id^=\"i-\"]");
 
     $timelapses.removeClass().addClass("merge");
   });
 
-  $(".tools .fa-trash-o").click(function () {
+  $(".tools #delete").click(function () {
     var $timelapses = $("[id^=\"i-\"]");
 
     $timelapses.removeClass().addClass("delete");
