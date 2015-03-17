@@ -145,10 +145,11 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
     var $audio = $("#audio-" + id);
     if (!$audio.length) {
       (function () {
-        $audio = $("<audio></audio>");
+        var url = location.pathname + "/beeps/" + id + ".mp3";
+        $audio = $("<audio src=\"" + url + "\"></audio>");
         var audio = $audio.get(0);
         audio.id = "audio" + id;
-        audio.src = location.pathname + "/beeps/" + id + ".mp3";
+        audio.src = url;
         audio.loop = true;
         $audio.on("canplay", function (e) {
           audio.play();
