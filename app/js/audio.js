@@ -14,9 +14,10 @@
 
     let $audio = $('#audio-'+id);
     if(!$audio.length) {
-      $audio = $('<audio id="audio' + id + '" src="/app/beeps/' + id + '.mp3"></audio>');
+      $audio = $('<audio></audio>');
       let audio = $audio.get(0);
-      audio.src = '/app/beeps/' + id + '.mp3';
+      audio.id = 'audio' + id;
+      audio.src = location.pathname + '/beeps/' + id + '.mp3';
       audio.loop = true;
       $audio.on('canplay', e => {
         audio.play();

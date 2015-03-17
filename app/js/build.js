@@ -145,9 +145,10 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
     var $audio = $("#audio-" + id);
     if (!$audio.length) {
       (function () {
-        $audio = $("<audio id=\"audio" + id + "\" src=\"/app/beeps/" + id + ".mp3\"></audio>");
+        $audio = $("<audio></audio>");
         var audio = $audio.get(0);
-        audio.src = "/app/beeps/" + id + ".mp3";
+        audio.id = "audio" + id;
+        audio.src = location.pathname + "/beeps/" + id + ".mp3";
         audio.loop = true;
         $audio.on("canplay", function (e) {
           audio.play();
@@ -182,8 +183,8 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
           get: function () {
             return parseInt(Math.round(gain.gain.value * 100));
           },
-          enumerable: true,
-          configurable: true
+          configurable: true,
+          enumerable: true
         }
       })
     };
@@ -236,8 +237,8 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
           get: function () {
             return oscillator.frequency.value;
           },
-          enumerable: true,
-          configurable: true
+          configurable: true,
+          enumerable: true
         },
         detune: {
           set: function (value) {
@@ -248,8 +249,8 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
           get: function () {
             return oscillator.detune.value;
           },
-          enumerable: true,
-          configurable: true
+          configurable: true,
+          enumerable: true
         },
         type: {
           set: function (value) {
@@ -260,8 +261,8 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
           get: function () {
             return oscillator.type;
           },
-          enumerable: true,
-          configurable: true
+          configurable: true,
+          enumerable: true
         },
         volume: {
           set: function (value) {
@@ -272,8 +273,8 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
           get: function () {
             return parseInt(Math.round(gain.gain.value * 100));
           },
-          enumerable: true,
-          configurable: true
+          configurable: true,
+          enumerable: true
         }
       }) };
 
@@ -340,8 +341,8 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
                 get: function () {
                   return parseInt(Math.round(gain.gain.value * 100));
                 },
-                enumerable: true,
-                configurable: true
+                configurable: true,
+                enumerable: true
               }
             })
           };

@@ -1,5 +1,5 @@
 {
-  "name": "Ring Rang Rong",
+  "name": "RingRangRong",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "grunt-babel": "^4.0.0",
+    "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "^0.5.1",
     "grunt-contrib-less": "^1.0.0",
     "grunt-contrib-requirejs": "^0.4.4",
